@@ -1,0 +1,95 @@
+Rails Worksheet Pluglin
+=======================
+
+A Rails plugin that allows xls format worksheet documents.
+
+Dependencies
+
+JDK 1.4 or greater
+YAJB 0.8.1 or greater
+Jakarta POI (No need for install. Supplied as part of this package)
+
+Install Instructions for YAJB
+
+You can download YAJB from 
+http://www.cmt.phys.kyushu-u.ac.jp/~M.Sakurai/java/ruby/yajb-0.8.1.tar.gz
+Extract the tar to a temp directory and run setup.rb to install YAJB.
+
+USAGE
+=====
+
+Exposes Jakarta POI library for XLS manipulation through a built-in object 
+called workbook in the view template. View names should use a .rxls as the extension
+
+# Simple Example
+
+# views/controller_name/report.rxls
+
+sheet = workbook.createSheet("new sheet")
+row = sheet.createRow(0)
+row.createCell(0).setCellValue(1)
+row.createCell(1).setCellValue(1.2)
+row.createCell(2).setCellValue("This is a Testing Row")
+row.createCell(3).setCellValue("Guru Krupa")
+
+
+# controller returns '110.xls'
+def report
+	@client = Client.find(params[:id]) # Which is 110
+	render :action => 'report', :layout => false
+end
+
+# controller returns 'report.xls'
+def report
+   render :action => "report", :layout => false
+end
+
+# controller returns 'my-report.xls'
+def report
+   @worksheet_name = 'my-report.xls'
+   render :action => "report", :layout => false
+end
+
+# For large Worksheet documents 
+
+# Use CellBatch to batch the cell inserts/updates
+# Use RowGroupBatch to batch the row grouping calls
+# When only single sheet is present, the cell as well as row group
+# changes are applied at once aumatically as a single Batch call using
+# a custom java Helper function
+# When multiple sheets are present, after doing the sheet specific
+# cell as well as group operations call CellBatch.write_to(sheet_object)
+# for cell updates.
+# Call RowGroupBatch.group_rows to apply rowGroupings.
+
+CellBatch.add(5,1,"Row 6 col 1")
+CellBatch.add(5,2,"Row 6 col 2")
+ 
+CellBatch.add(7,1,"Row 8 col 1")
+CellBatch.add(8,2,"Row 9 col 2")
+
+RowGroupBatch.add(7,8)
+
+CellBatch.add(9,1,"Two rows above is grouped")
+
+ADDITIONAL POI USAGE INFORMATION
+================================
+
+See Jakarta POI Project Home Page below for a quick guide on POI Usage
+
+http://jakarta.apache.org/poi/hssf/index.html
+
+Jakarta POI API Doc link is given below:
+
+http://jakarta.apache.org/poi/apidocs/index.html?org/apache/poi/hssf/usermodel/package-summary.html
+
+BUG REPORTS
+===========
+
+
+
+CHANGE LOG
+==========
+
+2006-08-18 - Initial Release of version 0.1
+2008-10-01 - Changed the plugin so it works with Rails Edge
