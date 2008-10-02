@@ -15,8 +15,6 @@ JBRIDGE_OPTIONS = {
 }
 
 include JavaBridge
-jimport "java.io.*"
-jimport "org.apache.poi.hssf.usermodel.*"
 
 module Worksheet
   class Handler < ActionView::TemplateHandler
@@ -44,6 +42,9 @@ module Worksheet
     end
     
     def initialize
+      jimport "java.io.*"
+      jimport "org.apache.poi.hssf.usermodel.*"
+      
       CellBatch.instance.clear
       RowGroupBatch.instance.clear
       yield workbook
